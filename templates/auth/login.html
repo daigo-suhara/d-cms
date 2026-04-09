@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Headless CMS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+  <main class="container" style="max-width: 400px; margin-top: 10vh;">
+    <article>
+      <header><h2>Admin Login</h2></header>
+      {{ if .error }}
+      <p style="color: red;">{{ .error }}</p>
+      {{ end }}
+      <form method="POST" action="/admin/login">
+        <label>
+          Admin Token
+          <input type="password" name="token" placeholder="Enter admin token" required autofocus>
+        </label>
+        <button type="submit">Login</button>
+      </form>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{{ define "content" }}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+  <div>
+    <a href="/admin/content-models" style="font-size:0.875rem;">← Content Models</a>
+    <h2 style="margin:0;">{{ .model.Name }} Entries</h2>
+  </div>
+  <a href="/admin/{{ .model.Slug }}/entries/new" role="button">+ New Entry</a>
+</div>
+
+{{ if .entries }}
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      {{ range .model.Fields }}
+      <th>{{ .Name }}</th>
+      {{ end }}
+      <th>Created</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{ range .entries }}
+    <tr id="entry-{{ .ID }}">
+      <td>{{ .ID }}</td>
+      {{ $content := .Content }}
+      {{ range $.model.Fields }}
+      <td>{{ index $content .Name }}</td>
+      {{ end }}
+      <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
+      <td>
+        <div class="table-actions">
+          <a href="/admin/{{ $.model.Slug }}/entries/{{ .ID }}/edit" role="button" class="secondary outline small-btn">Edit</a>
+          <button
+            hx-delete="/admin/{{ $.model.Slug }}/entries/{{ .ID }}"
+            hx-target="#entry-{{ .ID }}"
+            hx-swap="outerHTML"
+            hx-confirm="Delete this entry?"
+            class="outline contrast small-btn">
+            Delete
+          </button>
+        </div>
+      </td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>
+{{ else }}
+<p>No entries yet. <a href="/admin/{{ .model.Slug }}/entries/new">Create your first entry</a>.</p>
+{{ end }}
+{{ end }}

@@ -1,0 +1,7 @@
+{{ define "field/date" }}
+<input
+  type="datetime-local"
+  name="content[{{ .Field.Name }}]"
+  value="{{ .Value }}"
+  {{ if .Field.Required }}required{{ end }}>
+{{ end }}

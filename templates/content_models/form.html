@@ -1,0 +1,69 @@
+{{ define "content" }}
+<h2>{{ if eq .action "create" }}New Content Model{{ else }}Edit: {{ .model.Name }}{{ end }}</h2>
+
+{{ if .error }}
+<div class="flash-error">{{ .error }}</div>
+{{ end }}
+
+<form
+  {{ if eq .action "create" }}
+    method="POST" action="/admin/content-models"
+  {{ else }}
+    method="POST" action="/admin/content-models/{{ .model.ID }}"
+  {{ end }}
+  x-data="fieldBuilder({{ fieldsJSON .model.Fields }})">
+
+  <label>
+    Name
+    <input type="text" name="name" value="{{ .model.Name }}" required placeholder="Blog Post">
+  </label>
+
+  <label>
+    Slug <small>(lowercase letters, numbers, hyphens)</small>
+    <input type="text" name="slug" value="{{ .model.Slug }}" required placeholder="blog-post" pattern="[a-z0-9-]+">
+  </label>
+
+  <fieldset>
+    <legend>Fields</legend>
+
+    <template x-for="(field, index) in fields" :key="index">
+      <div class="field-row">
+        <input type="text" placeholder="Field name" x-model="field.name" required>
+        <select x-model="field.type">
+          <option value="text">Text</option>
+          <option value="number">Number</option>
+          <option value="date">Date</option>
+          <option value="markdown">Markdown</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:0.25rem;margin:0;white-space:nowrap;">
+          <input type="checkbox" x-model="field.required" style="margin:0;">
+          Required
+        </label>
+        <button type="button" @click="removeField(index)" class="outline contrast small-btn">✕</button>
+      </div>
+    </template>
+
+    <button type="button" @click="addField()" class="secondary outline">+ Add Field</button>
+    <input type="hidden" name="fields_json" :value="JSON.stringify(fields)">
+  </fieldset>
+
+  <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+    <button type="submit">{{ if eq .action "create" }}Create{{ else }}Save{{ end }}</button>
+    <a href="/admin/content-models" role="button" class="secondary outline">Cancel</a>
+  </div>
+</form>
+
+<script>
+function fieldBuilder(initial) {
+  return {
+    fields: initial || [],
+    addField() {
+      this.fields.push({ name: '', type: 'text', required: false });
+    },
+    removeField(index) {
+      this.fields.splice(index, 1);
+    }
+  }
+}
+</script>
+{{ end }}

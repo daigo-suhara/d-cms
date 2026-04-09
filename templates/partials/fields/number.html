@@ -1,0 +1,9 @@
+{{ define "field/number" }}
+<input
+  type="number"
+  step="any"
+  name="content[{{ .Field.Name }}]"
+  value="{{ .Value }}"
+  {{ if .Field.Required }}required{{ end }}
+  placeholder="0">
+{{ end }}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .title }}{{ .title }} - {{ end }}Headless CMS</title>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+  <style>
+    nav.top-nav { padding: 0 1rem; background: var(--pico-card-background-color); border-bottom: 1px solid var(--pico-muted-border-color); }
+    .nav-brand { font-weight: bold; font-size: 1.1rem; text-decoration: none; }
+    .flash-error { background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: 4px; margin-bottom: 1rem; }
+    .table-actions { display: flex; gap: 0.5rem; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
+    .small-btn { padding: 0.25rem 0.75rem; font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav container-fluid">
+    <ul>
+      <li><a href="/admin/content-models" class="nav-brand">Headless CMS</a></li>
+    </ul>
+    <ul>
+      <li><a href="/admin/content-models">Content Models</a></li>
+      <li><a href="/admin/media">Media</a></li>
+      <li>
+        <form method="POST" action="/admin/logout" style="margin:0">
+          <button type="submit" class="secondary outline small-btn">Logout</button>
+        </form>
+      </li>
+    </ul>
+  </nav>
+  <main class="container" style="margin-top:2rem;">
+    {{ template "content" . }}
+  </main>
+</body>
+</html>

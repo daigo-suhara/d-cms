@@ -1,0 +1,77 @@
+package storage
+
+import (
+	"context"
+	"fmt"
+	"io"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/daigo-suhara/d-cms/config"
+)
+
+type R2Client struct {
+	client     *s3.Client
+	bucket     string
+	publicBase string
+}
+
+func NewR2Client(cfg *config.Config) (*R2Client, error) {
+	if cfg.R2Endpoint == "" {
+		return &R2Client{}, nil // No-op client when R2 is not configured
+	}
+
+	r2Resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
+		return aws.Endpoint{
+			URL:               cfg.R2Endpoint,
+			HostnameImmutable: true,
+		}, nil
+	})
+
+	awsCfg := aws.Config{
+		Region:                      cfg.AWSRegion,
+		Credentials:                 credentials.NewStaticCredentialsProvider(cfg.AWSKeyID, cfg.AWSKeySecret, ""),
+		EndpointResolverWithOptions: r2Resolver,
+	}
+
+	client := s3.NewFromConfig(awsCfg, func(o *s3.Options) {
+		o.UsePathStyle = true
+	})
+
+	return &R2Client{
+		client:     client,
+		bucket:     cfg.R2BucketName,
+		publicBase: cfg.R2PublicBase,
+	}, nil
+}
+
+func (r *R2Client) Upload(ctx context.Context, key string, body io.Reader, contentType string) (string, error) {
+	if r.client == nil {
+		return "", fmt.Errorf("R2 storage is not configured")
+	}
+	_, err := r.client.PutObject(ctx, &s3.PutObjectInput{
+		Bucket:      aws.String(r.bucket),
+		Key:         aws.String(key),
+		Body:        body,
+		ContentType: aws.String(contentType),
+	})
+	if err != nil {
+		return "", fmt.Errorf("R2 PutObject %q: %w", key, err)
+	}
+	return r.publicBase + "/" + key, nil
+}
+
+func (r *R2Client) Delete(ctx context.Context, key string) error {
+	if r.client == nil {
+		return fmt.Errorf("R2 storage is not configured")
+	}
+	_, err := r.client.DeleteObject(ctx, &s3.DeleteObjectInput{
+		Bucket: aws.String(r.bucket),
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		return fmt.Errorf("R2 DeleteObject %q: %w", key, err)
+	}
+	return nil
+}

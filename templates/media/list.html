@@ -1,0 +1,56 @@
+{{ define "content" }}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+  <h2>Media Library</h2>
+  <button onclick="document.getElementById('upload-dialog').showModal()" role="button">+ Upload</button>
+</div>
+
+<dialog id="upload-dialog">
+  <article>
+    <header>
+      <button aria-label="Close" rel="prev" onclick="document.getElementById('upload-dialog').close()"></button>
+      <h3>Upload File</h3>
+    </header>
+    <form method="POST" action="/admin/media/upload" enctype="multipart/form-data">
+      <label>
+        File
+        <input type="file" name="file" required>
+      </label>
+      <footer>
+        <button type="button" class="secondary" onclick="document.getElementById('upload-dialog').close()">Cancel</button>
+        <button type="submit">Upload</button>
+      </footer>
+    </form>
+  </article>
+</dialog>
+
+{{ if .media }}
+<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap:1rem;">
+  {{ range .media }}
+  <div id="media-{{ .ID }}" style="border:1px solid var(--pico-muted-border-color); border-radius:8px; padding:0.75rem; text-align:center;">
+    {{ if isImage .MimeType }}
+    <img src="{{ .URL }}" alt="{{ .Filename }}" style="max-width:100%; max-height:120px; object-fit:cover; border-radius:4px; margin-bottom:0.5rem;">
+    {{ else }}
+    <div style="height:120px; display:flex; align-items:center; justify-content:center; background:var(--pico-card-sectioning-background-color); border-radius:4px; margin-bottom:0.5rem;">
+      📄
+    </div>
+    {{ end }}
+    <p style="font-size:0.75rem; word-break:break-all; margin:0.25rem 0;">{{ .Filename }}</p>
+    <p style="font-size:0.7rem; color:var(--pico-muted-color); margin:0.25rem 0;">{{ formatSize .Size }}</p>
+    <div style="display:flex; gap:0.5rem; justify-content:center; margin-top:0.5rem;">
+      <a href="{{ .URL }}" target="_blank" class="secondary outline small-btn" role="button">View</a>
+      <button
+        hx-delete="/admin/media/{{ .ID }}"
+        hx-target="#media-{{ .ID }}"
+        hx-swap="outerHTML"
+        hx-confirm="Delete this file?"
+        class="outline contrast small-btn">
+        Delete
+      </button>
+    </div>
+  </div>
+  {{ end }}
+</div>
+{{ else }}
+<p>No media files yet. Upload your first file.</p>
+{{ end }}
+{{ end }}

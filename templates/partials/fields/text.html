@@ -1,0 +1,8 @@
+{{ define "field/text" }}
+<input
+  type="text"
+  name="content[{{ .Field.Name }}]"
+  value="{{ .Value }}"
+  {{ if .Field.Required }}required{{ end }}
+  placeholder="{{ .Field.Name }}">
+{{ end }}

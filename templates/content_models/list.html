@@ -1,0 +1,43 @@
+{{ define "content" }}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+  <h2>Content Models</h2>
+  <a href="/admin/content-models/new" role="button">+ New Model</a>
+</div>
+
+{{ if .models }}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Slug</th>
+      <th>Fields</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="models-list">
+    {{ range .models }}
+    <tr id="model-{{ .ID }}">
+      <td><a href="/admin/{{ .Slug }}/entries">{{ .Name }}</a></td>
+      <td><code>{{ .Slug }}</code></td>
+      <td>{{ len .Fields }}</td>
+      <td>
+        <div class="table-actions">
+          <a href="/admin/content-models/{{ .ID }}/edit" role="button" class="secondary outline small-btn">Edit</a>
+          <button
+            hx-delete="/admin/content-models/{{ .ID }}"
+            hx-target="#model-{{ .ID }}"
+            hx-swap="outerHTML"
+            hx-confirm="Delete '{{ .Name }}'? This will fail if entries exist."
+            class="outline contrast small-btn">
+            Delete
+          </button>
+        </div>
+      </td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>
+{{ else }}
+<p>No content models yet. <a href="/admin/content-models/new">Create your first model</a>.</p>
+{{ end }}
+{{ end }}

@@ -1,0 +1,39 @@
+{{ define "content" }}
+<div style="margin-bottom:1rem;">
+  <a href="/admin/{{ .model.Slug }}/entries" style="font-size:0.875rem;">← {{ .model.Name }} Entries</a>
+  <h2 style="margin:0;">{{ if eq .action "create" }}New {{ .model.Name }}{{ else }}Edit Entry #{{ .entry.ID }}{{ end }}</h2>
+</div>
+
+{{ if .error }}
+<div class="flash-error">{{ .error }}</div>
+{{ end }}
+
+<form
+  {{ if eq .action "create" }}
+    method="POST" action="/admin/{{ .model.Slug }}/entries"
+  {{ else }}
+    method="POST" action="/admin/{{ .model.Slug }}/entries/{{ .entry.ID }}"
+  {{ end }}>
+
+  {{ range .model.Fields }}
+    {{ $val := index $.entry.Content .Name }}
+    <label>
+      {{ .Name }}{{ if .Required }} <span style="color:red">*</span>{{ end }}
+      {{ if eq .Type "text" }}
+        {{ template "field/text" dict "Field" . "Value" $val }}
+      {{ else if eq .Type "number" }}
+        {{ template "field/number" dict "Field" . "Value" $val }}
+      {{ else if eq .Type "date" }}
+        {{ template "field/date" dict "Field" . "Value" $val }}
+      {{ else if eq .Type "markdown" }}
+        {{ template "field/markdown" dict "Field" . "Value" $val }}
+      {{ end }}
+    </label>
+  {{ end }}
+
+  <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+    <button type="submit">{{ if eq .action "create" }}Create{{ else }}Save{{ end }}</button>
+    <a href="/admin/{{ .model.Slug }}/entries" role="button" class="secondary outline">Cancel</a>
+  </div>
+</form>
+{{ end }}
