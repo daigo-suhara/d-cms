@@ -9,6 +9,7 @@ const (
 	FieldTypeNumber   FieldType = "number"
 	FieldTypeDate     FieldType = "date"
 	FieldTypeMarkdown FieldType = "markdown"
+	FieldTypeTags     FieldType = "tags"
 )
 
 type FieldDefinition struct {

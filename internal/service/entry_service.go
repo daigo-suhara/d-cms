@@ -106,6 +106,16 @@ func (s *EntryService) validate(model *domain.ContentModel, content domain.Conte
 			if _, ok := val.(string); !ok {
 				return fmt.Errorf("field %q must be a string: %w", field.Name, domain.ErrInvalidField)
 			}
+		case domain.FieldTypeTags:
+			items, ok := val.([]any)
+			if !ok {
+				return fmt.Errorf("field %q must be an array of strings: %w", field.Name, domain.ErrInvalidField)
+			}
+			for _, item := range items {
+				if _, ok := item.(string); !ok {
+					return fmt.Errorf("field %q must be an array of strings: %w", field.Name, domain.ErrInvalidField)
+				}
+			}
 		}
 	}
 	return nil
