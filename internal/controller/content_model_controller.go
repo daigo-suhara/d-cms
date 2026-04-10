@@ -172,6 +172,32 @@ func (ctrl *ContentModelController) bindModel(c *gin.Context) (*domain.ContentMo
 	}, nil
 }
 
+// ── Public JSON API ──────────────────────────────────────────────────────────
+
+func (ctrl *ContentModelController) RegisterAPI(rg *gin.RouterGroup) {
+	rg.GET("/models", ctrl.APIList)
+	rg.GET("/models/:slug", ctrl.APIGetBySlug)
+}
+
+func (ctrl *ContentModelController) APIList(c *gin.Context) {
+	models, err := ctrl.svc.List(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"models": models})
+}
+
+func (ctrl *ContentModelController) APIGetBySlug(c *gin.Context) {
+	slug := c.Param("slug")
+	model, err := ctrl.svc.GetBySlug(c.Request.Context(), slug)
+	if err != nil {
+		c.JSON(httpStatus(err), gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, model)
+}
+
 func parseID(c *gin.Context) (uint, error) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

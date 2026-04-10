@@ -21,6 +21,7 @@ func main() {
 		&domain.ContentModel{},
 		&domain.Entry{},
 		&domain.Media{},
+		&domain.APIKey{},
 	); err != nil {
 		log.Fatalf("Migration failed: %v", err)
 	}

@@ -33,6 +33,12 @@ func (ctrl *EntryController) RegisterAPI(rg *gin.RouterGroup) {
 	rg.GET("/:modelSlug/entries/:id", ctrl.APIGet)
 }
 
+func (ctrl *EntryController) RegisterAPIWrite(rg *gin.RouterGroup) {
+	rg.POST("/:modelSlug/entries", ctrl.Create)
+	rg.PUT("/:modelSlug/entries/:id", ctrl.APIUpdate)
+	rg.DELETE("/:modelSlug/entries/:id", ctrl.APIDelete)
+}
+
 func (ctrl *EntryController) List(c *gin.Context) {
 	modelSlug := c.Param("modelSlug")
 	entries, model, err := ctrl.svc.ListBySlug(c.Request.Context(), modelSlug)
@@ -219,4 +225,39 @@ func (ctrl *EntryController) parseContent(c *gin.Context, modelSlug string) (dom
 		}
 	}
 	return content, nil
+}
+
+// APIUpdate handles PUT /:modelSlug/entries/:id (JSON only).
+func (ctrl *EntryController) APIUpdate(c *gin.Context) {
+	modelSlug := c.Param("modelSlug")
+	id, err := parseID(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	content, err := ctrl.parseContent(c, modelSlug)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	entry, err := ctrl.svc.Update(c.Request.Context(), id, content)
+	if err != nil {
+		c.JSON(httpStatus(err), gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, entry)
+}
+
+// APIDelete handles DELETE /:modelSlug/entries/:id (JSON only).
+func (ctrl *EntryController) APIDelete(c *gin.Context) {
+	id, err := parseID(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := ctrl.svc.Delete(c.Request.Context(), id); err != nil {
+		c.JSON(httpStatus(err), gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
 }

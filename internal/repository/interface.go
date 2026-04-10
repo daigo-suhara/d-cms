@@ -30,3 +30,10 @@ type MediaRepository interface {
 	Create(ctx context.Context, m *domain.Media) error
 	Delete(ctx context.Context, id uint) error
 }
+
+type APIKeyRepository interface {
+	FindAll(ctx context.Context) ([]domain.APIKey, error)
+	FindByKey(ctx context.Context, key string) (*domain.APIKey, error)
+	Create(ctx context.Context, k *domain.APIKey) error
+	Delete(ctx context.Context, id uint) error
+}

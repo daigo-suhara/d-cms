@@ -28,24 +28,25 @@ func Setup(db *gorm.DB, storage service.StorageClient, cfg *config.Config) *gin.
 	cmRepo := repository.NewContentModelRepository(db)
 	entryRepo := repository.NewEntryRepository(db)
 	mediaRepo := repository.NewMediaRepository(db)
+	apiKeyRepo := repository.NewAPIKeyRepository(db)
 
 	// Services
 	cmSvc := service.NewContentModelService(cmRepo, entryRepo)
 	entrySvc := service.NewEntryService(cmRepo, entryRepo)
 	mediaSvc := service.NewMediaService(mediaRepo, storage)
+	apiKeySvc := service.NewAPIKeyService(apiKeyRepo)
 
 	// Controllers
 	authCtrl := controller.NewAuthController(cfg.AdminToken)
 	cmCtrl := controller.NewContentModelController(cmSvc)
 	entryCtrl := controller.NewEntryController(entrySvc, cmSvc)
 	mediaCtrl := controller.NewMediaController(mediaSvc)
+	apiKeyCtrl := controller.NewAPIKeyController(apiKeySvc)
 
-	// Public routes
-	r.GET("/", func(c *gin.Context) {
-		c.Redirect(302, "/admin/content-models")
-	})
+	// Root redirect
+	r.GET("/", func(c *gin.Context) { c.Redirect(302, "/admin/content-models") })
 
-	// Auth routes (no auth required)
+	// Auth routes (public)
 	adminPublic := r.Group("/admin")
 	authCtrl.Register(adminPublic)
 
@@ -54,10 +55,14 @@ func Setup(db *gorm.DB, storage service.StorageClient, cfg *config.Config) *gin.
 	cmCtrl.Register(admin)
 	entryCtrl.RegisterAdmin(admin)
 	mediaCtrl.Register(admin)
+	apiKeyCtrl.Register(admin)
 
-	// Public JSON API
-	api := r.Group("/api/v1")
+	// ── API v1 (全エンドポイントAPIキー必須) ────────────────────────────────
+
+	api := r.Group("/api/v1", middleware.APIAuth(apiKeySvc))
+	cmCtrl.RegisterAPI(api)
 	entryCtrl.RegisterAPI(api)
+	entryCtrl.RegisterAPIWrite(api)
 
 	return r
 }
@@ -89,6 +94,12 @@ func funcMap() template.FuncMap {
 				return fmt.Sprintf("%d B", size)
 			}
 		},
+		"keyPreview": func(key string) string {
+			if len(key) <= 12 {
+				return key
+			}
+			return key[:12] + "••••••••••••"
+		},
 	}
 }
 
@@ -111,6 +122,7 @@ func createRenderer() multitemplate.Renderer {
 		"entries/list.html":        "templates/entries/list.html",
 		"entries/form.html":        "templates/entries/form.html",
 		"media/list.html":          "templates/media/list.html",
+		"api_keys/list.html":       "templates/api_keys/list.html",
 		"error.html":               "templates/error.html",
 	}
 

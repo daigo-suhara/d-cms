@@ -94,6 +94,24 @@
           メディア
         </span>
       </a>
+
+      <!-- セクション: 開発者 -->
+      <p class="section-label px-2 pb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-400 whitespace-nowrap overflow-hidden"
+         :style="collapsed ? 'opacity:0; height:0; margin:0; padding:0' : 'opacity:1; margin-top:12px'">開発者</p>
+
+      <a href="/admin/api-keys"
+         class="nav-item flex items-center rounded-md text-slate-500 font-medium hover:bg-slate-100 hover:text-slate-900 transition-colors mb-0.5 overflow-hidden"
+         :class="collapsed ? 'justify-center p-3' : 'gap-2.5 px-3 py-2'"
+         data-match="/admin/api-keys"
+         :title="collapsed ? 'APIキー' : ''">
+        <svg class="w-[18px] h-[18px] shrink-0 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+        </svg>
+        <span class="nav-label whitespace-nowrap overflow-hidden"
+              :style="collapsed ? 'opacity:0; width:0' : 'opacity:1; width:auto'">
+          APIキー
+        </span>
+      </a>
     </nav>
 
     <!-- Logout -->
