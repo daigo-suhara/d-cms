@@ -45,7 +45,11 @@
               hx-delete="/admin/content-models/{{ .ID }}"
               hx-target="#model-{{ .ID }}"
               hx-swap="outerHTML"
-              hx-confirm="「{{ .Name }}」を削除しますか？エントリが存在する場合は削除できません。"
+              hx-trigger="confirmed"
+              @click="$dispatch('open-confirm', {
+                message: '「{{ .Name }}」を削除しますか？エントリが存在する場合は削除できません。',
+                el: $el
+              })"
               class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors">
               削除
             </button>

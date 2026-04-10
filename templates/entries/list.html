@@ -56,7 +56,11 @@
                 hx-delete="/admin/{{ $.model.Slug }}/entries/{{ .ID }}"
                 hx-target="#entry-{{ .ID }}"
                 hx-swap="outerHTML"
-                hx-confirm="このエントリを削除しますか？"
+                hx-trigger="confirmed"
+                @click="$dispatch('open-confirm', {
+                  message: 'このエントリを削除しますか？この操作は取り消せません。',
+                  el: $el
+                })"
                 class="inline-flex items-center whitespace-nowrap px-2.5 py-1 text-xs font-medium border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors">
                 削除
               </button>

@@ -131,7 +131,78 @@
     </main>
   </div>
 
+  <!-- ── Confirm Modal ────────────────────────── -->
+  <div x-data="confirmModal()"
+       @open-confirm.window="open($event.detail)"
+       x-show="isOpen"
+       x-cloak
+       class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+         x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="close()"></div>
+    <!-- Card -->
+    <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6"
+         x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95">
+      <!-- Icon -->
+      <div class="flex items-center justify-center w-11 h-11 rounded-full bg-red-50 mb-4">
+        <svg class="w-5 h-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+      </div>
+      <!-- Message -->
+      <h3 class="text-[15px] font-semibold text-slate-900 mb-1.5" x-text="title"></h3>
+      <p class="text-sm text-slate-500 mb-6" x-text="message"></p>
+      <!-- Actions -->
+      <div class="flex gap-2.5 justify-end">
+        <button @click="close()"
+                class="px-4 py-2 text-sm font-medium border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors">
+          キャンセル
+        </button>
+        <button @click="confirm()"
+                class="px-4 py-2 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+          削除する
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    function confirmModal() {
+      return {
+        isOpen: false,
+        title: '削除の確認',
+        message: '',
+        targetEl: null,
+        open(detail) {
+          this.title = detail.title || '削除の確認';
+          this.message = detail.message || '本当に削除しますか？この操作は取り消せません。';
+          this.targetEl = detail.el;
+          this.isOpen = true;
+        },
+        confirm() {
+          if (this.targetEl) {
+            this.targetEl.dispatchEvent(new Event('confirmed'));
+          }
+          this.close();
+        },
+        close() {
+          this.isOpen = false;
+          this.targetEl = null;
+        }
+      }
+    }
+
     function sidebarApp() {
       return {
         collapsed: localStorage.getItem('sidebar-collapsed') !== 'false',
