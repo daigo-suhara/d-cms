@@ -22,20 +22,13 @@ func NewR2Client(cfg *config.Config) (*R2Client, error) {
 		return &R2Client{}, nil // No-op client when R2 is not configured
 	}
 
-	r2Resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-		return aws.Endpoint{
-			URL:               cfg.R2Endpoint,
-			HostnameImmutable: true,
-		}, nil
-	})
-
 	awsCfg := aws.Config{
-		Region:                      cfg.AWSRegion,
-		Credentials:                 credentials.NewStaticCredentialsProvider(cfg.AWSKeyID, cfg.AWSKeySecret, ""),
-		EndpointResolverWithOptions: r2Resolver,
+		Region:      cfg.AWSRegion,
+		Credentials: credentials.NewStaticCredentialsProvider(cfg.AWSKeyID, cfg.AWSKeySecret, ""),
 	}
 
 	client := s3.NewFromConfig(awsCfg, func(o *s3.Options) {
+		o.BaseEndpoint = aws.String(cfg.R2Endpoint)
 		o.UsePathStyle = true
 	})
 
