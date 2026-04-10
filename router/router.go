@@ -117,6 +117,7 @@ func createRenderer() multitemplate.Renderer {
 		"templates/partials/fields/number.html",
 		"templates/partials/fields/date.html",
 		"templates/partials/fields/markdown.html",
+		"templates/partials/fields/tags.html",
 	}
 
 	// Pages that use the main layout

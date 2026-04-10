@@ -98,7 +98,7 @@ func (s *ContentModelService) validateModel(m *domain.ContentModel) error {
 		}
 		seen[f.Name] = true
 		switch f.Type {
-		case domain.FieldTypeText, domain.FieldTypeNumber, domain.FieldTypeDate, domain.FieldTypeMarkdown:
+		case domain.FieldTypeText, domain.FieldTypeNumber, domain.FieldTypeDate, domain.FieldTypeMarkdown, domain.FieldTypeTags:
 		default:
 			return fmt.Errorf("unknown field type %q: %w", f.Type, domain.ErrValidation)
 		}
