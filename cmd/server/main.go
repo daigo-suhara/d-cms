@@ -6,6 +6,7 @@ import (
 	"github.com/daigo-suhara/d-cms/config"
 	"github.com/daigo-suhara/d-cms/internal/infrastructure/database"
 	"github.com/daigo-suhara/d-cms/internal/infrastructure/storage"
+	"github.com/daigo-suhara/d-cms/internal/migration"
 	"github.com/daigo-suhara/d-cms/router"
 )
 
@@ -16,6 +17,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
+
+	log.Println("Running database migrations...")
+	if err := migration.Run(db); err != nil {
+		log.Fatalf("Migration failed: %v", err)
+	}
+	log.Println("Migrations completed successfully.")
 
 	r2, err := storage.NewR2Client(cfg)
 	if err != nil {

@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/daigo-suhara/d-cms/config"
-	"github.com/daigo-suhara/d-cms/internal/domain"
 	"github.com/daigo-suhara/d-cms/internal/infrastructure/database"
+	"github.com/daigo-suhara/d-cms/internal/migration"
 )
 
 func main() {
@@ -17,12 +17,7 @@ func main() {
 	}
 
 	log.Println("Running database migrations...")
-	if err := db.AutoMigrate(
-		&domain.ContentModel{},
-		&domain.Entry{},
-		&domain.Media{},
-		&domain.APIKey{},
-	); err != nil {
+	if err := migration.Run(db); err != nil {
 		log.Fatalf("Migration failed: %v", err)
 	}
 	log.Println("Migrations completed successfully.")
