@@ -1,8 +1,22 @@
 {{ define "content" }}
-<h2>{{ if eq .action "create" }}New Content Model{{ else }}Edit: {{ .model.Name }}{{ end }}</h2>
+<div class="mb-6">
+  <div class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+    <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">Content Models</a>
+    <span>/</span>
+    <span>{{ if eq .action "create" }}New Model{{ else }}Edit{{ end }}</span>
+  </div>
+  <h1 class="text-xl font-bold text-slate-900 tracking-tight">
+    {{ if eq .action "create" }}New Content Model{{ else }}Edit: {{ .model.Name }}{{ end }}
+  </h1>
+</div>
 
 {{ if .error }}
-<div class="flash-error">{{ .error }}</div>
+<div class="flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-5">
+  <svg class="w-4 h-4 mt-0.5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
+  {{ .error }}
+</div>
 {{ end }}
 
 <form
@@ -13,43 +27,89 @@
   {{ end }}
   x-data="fieldBuilder({{ fieldsJSON .model.Fields }})">
 
-  <label>
-    Name
-    <input type="text" name="name" value="{{ .model.Name }}" required placeholder="Blog Post">
-  </label>
+  <div class="grid grid-cols-2 gap-5 items-start">
 
-  <label>
-    Slug <small>(lowercase letters, numbers, hyphens)</small>
-    <input type="text" name="slug" value="{{ .model.Slug }}" required placeholder="blog-post" pattern="[a-z0-9-]+">
-  </label>
-
-  <fieldset>
-    <legend>Fields</legend>
-
-    <template x-for="(field, index) in fields" :key="index">
-      <div class="field-row">
-        <input type="text" placeholder="Field name" x-model="field.name" required>
-        <select x-model="field.type">
-          <option value="text">Text</option>
-          <option value="number">Number</option>
-          <option value="date">Date</option>
-          <option value="markdown">Markdown</option>
-        </select>
-        <label style="display:flex;align-items:center;gap:0.25rem;margin:0;white-space:nowrap;">
-          <input type="checkbox" x-model="field.required" style="margin:0;">
-          Required
-        </label>
-        <button type="button" @click="removeField(index)" class="outline contrast small-btn">✕</button>
+    <!-- Left: Basic info -->
+    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-slate-200 text-sm font-semibold text-slate-700">基本情報</div>
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">
+            Name <span class="text-red-500">*</span>
+          </label>
+          <input type="text" name="name" value="{{ .model.Name }}" required placeholder="Blog Post"
+            class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Slug</label>
+          <input type="text" name="slug" value="{{ .model.Slug }}" required placeholder="blog-post" pattern="[a-z0-9-]+"
+            class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300 font-mono">
+          <p class="mt-1 text-xs text-slate-400">小文字・数字・ハイフンのみ</p>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+            {{ if eq .action "create" }}Create Model{{ else }}Save Changes{{ end }}
+          </button>
+          <a href="/admin/content-models" class="px-4 py-2 border border-slate-300 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+            Cancel
+          </a>
+        </div>
       </div>
-    </template>
+    </div>
 
-    <button type="button" @click="addField()" class="secondary outline">+ Add Field</button>
-    <input type="hidden" name="fields_json" :value="JSON.stringify(fields)">
-  </fieldset>
+    <!-- Right: Fields -->
+    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
+        <span class="text-sm font-semibold text-slate-700">Fields</span>
+        <button type="button" @click="addField()"
+          class="inline-flex items-center gap-1 px-2.5 py-1.5 border border-slate-300 text-slate-600 text-xs font-medium rounded-md hover:bg-slate-50 transition-colors">
+          <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Field
+        </button>
+      </div>
+      <div class="p-5">
+        <input type="hidden" name="fields_json" :value="JSON.stringify(fields)">
 
-  <div style="display:flex;gap:0.5rem;margin-top:1rem;">
-    <button type="submit">{{ if eq .action "create" }}Create{{ else }}Save{{ end }}</button>
-    <a href="/admin/content-models" role="button" class="secondary outline">Cancel</a>
+        <template x-if="fields.length === 0">
+          <div class="border border-dashed border-slate-200 rounded-lg py-8 text-center text-sm text-slate-400">
+            フィールドがありません
+          </div>
+        </template>
+
+        <div class="space-y-2">
+          <template x-for="(field, index) in fields" :key="index">
+            <div class="grid gap-2 p-3 bg-slate-50 border border-slate-200 rounded-lg" style="grid-template-columns: 1fr 130px auto auto; align-items: center;">
+              <input
+                type="text"
+                placeholder="field_name"
+                x-model="field.name"
+                required
+                class="px-2.5 py-1.5 text-xs font-mono border border-slate-300 rounded-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 bg-white">
+              <select x-model="field.type"
+                class="px-2 py-1.5 text-xs border border-slate-300 rounded-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 bg-white">
+                <option value="text">Text</option>
+                <option value="number">Number</option>
+                <option value="date">Date</option>
+                <option value="markdown">Markdown</option>
+              </select>
+              <label class="flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
+                <input type="checkbox" x-model="field.required" class="w-3.5 h-3.5 accent-blue-600">
+                <span class="text-xs text-slate-500">Required</span>
+              </label>
+              <button type="button" @click="removeField(index)"
+                class="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors">
+                <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+
   </div>
 </form>
 

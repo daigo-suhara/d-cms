@@ -3,5 +3,6 @@
   type="datetime-local"
   name="content[{{ .Field.Name }}]"
   value="{{ .Value }}"
-  {{ if .Field.Required }}required{{ end }}>
+  {{ if .Field.Required }}required{{ end }}
+  class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
 {{ end }}

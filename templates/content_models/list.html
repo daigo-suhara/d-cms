@@ -1,43 +1,70 @@
 {{ define "content" }}
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-  <h2>Content Models</h2>
-  <a href="/admin/content-models/new" role="button">+ New Model</a>
+<div class="flex items-center justify-between mb-5">
+  <h1 class="text-xl font-bold text-slate-900 tracking-tight">Content Models</h1>
+  <a href="/admin/content-models/new"
+     class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    New Model
+  </a>
 </div>
 
 {{ if .models }}
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Slug</th>
-      <th>Fields</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody id="models-list">
-    {{ range .models }}
-    <tr id="model-{{ .ID }}">
-      <td><a href="/admin/{{ .Slug }}/entries">{{ .Name }}</a></td>
-      <td><code>{{ .Slug }}</code></td>
-      <td>{{ len .Fields }}</td>
-      <td>
-        <div class="table-actions">
-          <a href="/admin/content-models/{{ .ID }}/edit" role="button" class="secondary outline small-btn">Edit</a>
-          <button
-            hx-delete="/admin/content-models/{{ .ID }}"
-            hx-target="#model-{{ .ID }}"
-            hx-swap="outerHTML"
-            hx-confirm="Delete '{{ .Name }}'? This will fail if entries exist."
-            class="outline contrast small-btn">
-            Delete
-          </button>
-        </div>
-      </td>
-    </tr>
-    {{ end }}
-  </tbody>
-</table>
+<div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+  <table class="w-full">
+    <thead>
+      <tr class="border-b border-slate-200">
+        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">Name</th>
+        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">Slug</th>
+        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">Fields</th>
+        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-32">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="models-list" class="divide-y divide-slate-100">
+      {{ range .models }}
+      <tr id="model-{{ .ID }}" class="hover:bg-slate-50 transition-colors">
+        <td class="px-5 py-3.5">
+          <a href="/admin/{{ .Slug }}/entries" class="font-medium text-blue-600 hover:text-blue-700 hover:underline">{{ .Name }}</a>
+        </td>
+        <td class="px-5 py-3.5">
+          <code class="text-xs font-mono bg-violet-50 text-violet-700 px-2 py-0.5 rounded">{{ .Slug }}</code>
+        </td>
+        <td class="px-5 py-3.5">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600">
+            {{ len .Fields }} fields
+          </span>
+        </td>
+        <td class="px-5 py-3.5">
+          <div class="flex items-center gap-1.5">
+            <a href="/admin/content-models/{{ .ID }}/edit"
+               class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-md hover:bg-slate-50 transition-colors">
+              Edit
+            </a>
+            <button
+              hx-delete="/admin/content-models/{{ .ID }}"
+              hx-target="#model-{{ .ID }}"
+              hx-swap="outerHTML"
+              hx-confirm="Delete '{{ .Name }}'? This will fail if entries exist."
+              class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>
 {{ else }}
-<p>No content models yet. <a href="/admin/content-models/new">Create your first model</a>.</p>
+<div class="bg-white border border-slate-200 rounded-xl py-16 text-center">
+  <svg class="w-10 h-10 mx-auto mb-3 text-slate-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+  </svg>
+  <h3 class="text-sm font-semibold text-slate-600 mb-1">No content models yet</h3>
+  <p class="text-sm text-slate-400">
+    <a href="/admin/content-models/new" class="text-blue-600 hover:underline">最初のモデルを作成する</a>
+  </p>
+</div>
 {{ end }}
 {{ end }}

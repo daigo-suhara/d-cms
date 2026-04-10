@@ -1,51 +1,82 @@
 {{ define "content" }}
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+<div class="flex items-start justify-between mb-5">
   <div>
-    <a href="/admin/content-models" style="font-size:0.875rem;">← Content Models</a>
-    <h2 style="margin:0;">{{ .model.Name }} Entries</h2>
+    <div class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+      <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">Content Models</a>
+      <span>/</span>
+      <span>{{ .model.Name }}</span>
+    </div>
+    <h1 class="text-xl font-bold text-slate-900 tracking-tight">{{ .model.Name }}</h1>
   </div>
-  <a href="/admin/{{ .model.Slug }}/entries/new" role="button">+ New Entry</a>
+  <a href="/admin/{{ .model.Slug }}/entries/new"
+     class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    New Entry
+  </a>
 </div>
 
 {{ if .entries }}
-<table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      {{ range .model.Fields }}
-      <th>{{ .Name }}</th>
-      {{ end }}
-      <th>Created</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{ range .entries }}
-    <tr id="entry-{{ .ID }}">
-      <td>{{ .ID }}</td>
-      {{ $content := .Content }}
-      {{ range $.model.Fields }}
-      <td>{{ index $content .Name }}</td>
-      {{ end }}
-      <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
-      <td>
-        <div class="table-actions">
-          <a href="/admin/{{ $.model.Slug }}/entries/{{ .ID }}/edit" role="button" class="secondary outline small-btn">Edit</a>
-          <button
-            hx-delete="/admin/{{ $.model.Slug }}/entries/{{ .ID }}"
-            hx-target="#entry-{{ .ID }}"
-            hx-swap="outerHTML"
-            hx-confirm="Delete this entry?"
-            class="outline contrast small-btn">
-            Delete
-          </button>
-        </div>
-      </td>
-    </tr>
-    {{ end }}
-  </tbody>
-</table>
+<div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead>
+        <tr class="border-b border-slate-200">
+          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-16">ID</th>
+          {{ range .model.Fields }}
+          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">{{ .Name }}</th>
+          {{ end }}
+          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">Created</th>
+          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-32">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {{ range .entries }}
+        <tr id="entry-{{ .ID }}" class="hover:bg-slate-50 transition-colors">
+          <td class="px-5 py-3.5">
+            <span class="text-xs font-mono text-slate-400">#{{ .ID }}</span>
+          </td>
+          {{ $content := .Content }}
+          {{ range $.model.Fields }}
+          <td class="px-5 py-3.5 text-slate-700 max-w-[180px]">
+            <span class="block truncate text-sm">{{ index $content .Name }}</span>
+          </td>
+          {{ end }}
+          <td class="px-5 py-3.5 text-xs text-slate-400 whitespace-nowrap">
+            {{ .CreatedAt.Format "2006-01-02 15:04" }}
+          </td>
+          <td class="px-5 py-3.5">
+            <div class="flex items-center gap-1.5">
+              <a href="/admin/{{ $.model.Slug }}/entries/{{ .ID }}/edit"
+                 class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-md hover:bg-slate-50 transition-colors">
+                Edit
+              </a>
+              <button
+                hx-delete="/admin/{{ $.model.Slug }}/entries/{{ .ID }}"
+                hx-target="#entry-{{ .ID }}"
+                hx-swap="outerHTML"
+                hx-confirm="Delete this entry?"
+                class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</div>
 {{ else }}
-<p>No entries yet. <a href="/admin/{{ .model.Slug }}/entries/new">Create your first entry</a>.</p>
+<div class="bg-white border border-slate-200 rounded-xl py-16 text-center">
+  <svg class="w-10 h-10 mx-auto mb-3 text-slate-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+  </svg>
+  <h3 class="text-sm font-semibold text-slate-600 mb-1">エントリがありません</h3>
+  <p class="text-sm text-slate-400">
+    <a href="/admin/{{ .model.Slug }}/entries/new" class="text-blue-600 hover:underline">最初のエントリを作成する</a>
+  </p>
+</div>
 {{ end }}
 {{ end }}

@@ -1,11 +1,24 @@
 {{ define "content" }}
-<div style="margin-bottom:1rem;">
-  <a href="/admin/{{ .model.Slug }}/entries" style="font-size:0.875rem;">← {{ .model.Name }} Entries</a>
-  <h2 style="margin:0;">{{ if eq .action "create" }}New {{ .model.Name }}{{ else }}Edit Entry #{{ .entry.ID }}{{ end }}</h2>
+<div class="mb-6">
+  <div class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+    <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">Content Models</a>
+    <span>/</span>
+    <a href="/admin/{{ .model.Slug }}/entries" class="hover:text-blue-600 transition-colors">{{ .model.Name }}</a>
+    <span>/</span>
+    <span>{{ if eq .action "create" }}New{{ else }}Edit #{{ .entry.ID }}{{ end }}</span>
+  </div>
+  <h1 class="text-xl font-bold text-slate-900 tracking-tight">
+    {{ if eq .action "create" }}New {{ .model.Name }}{{ else }}Edit Entry #{{ .entry.ID }}{{ end }}
+  </h1>
 </div>
 
 {{ if .error }}
-<div class="flash-error">{{ .error }}</div>
+<div class="flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-5">
+  <svg class="w-4 h-4 mt-0.5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
+  {{ .error }}
+</div>
 {{ end }}
 
 <form
@@ -15,25 +28,35 @@
     method="POST" action="/admin/{{ .model.Slug }}/entries/{{ .entry.ID }}"
   {{ end }}>
 
-  {{ range .model.Fields }}
-    {{ $val := index $.entry.Content .Name }}
-    <label>
-      {{ .Name }}{{ if .Required }} <span style="color:red">*</span>{{ end }}
-      {{ if eq .Type "text" }}
-        {{ template "field/text" dict "Field" . "Value" $val }}
-      {{ else if eq .Type "number" }}
-        {{ template "field/number" dict "Field" . "Value" $val }}
-      {{ else if eq .Type "date" }}
-        {{ template "field/date" dict "Field" . "Value" $val }}
-      {{ else if eq .Type "markdown" }}
-        {{ template "field/markdown" dict "Field" . "Value" $val }}
+  <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+    <div class="px-5 py-3.5 border-b border-slate-200 text-sm font-semibold text-slate-700">エントリの内容</div>
+    <div class="p-5 space-y-5">
+      {{ range .model.Fields }}
+        {{ $val := index $.entry.Content .Name }}
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">
+            {{ .Name }}{{ if .Required }}<span class="text-red-500 ml-0.5">*</span>{{ end }}
+          </label>
+          {{ if eq .Type "text" }}
+            {{ template "field/text" dict "Field" . "Value" $val }}
+          {{ else if eq .Type "number" }}
+            {{ template "field/number" dict "Field" . "Value" $val }}
+          {{ else if eq .Type "date" }}
+            {{ template "field/date" dict "Field" . "Value" $val }}
+          {{ else if eq .Type "markdown" }}
+            {{ template "field/markdown" dict "Field" . "Value" $val }}
+          {{ end }}
+        </div>
       {{ end }}
-    </label>
-  {{ end }}
-
-  <div style="display:flex;gap:0.5rem;margin-top:1rem;">
-    <button type="submit">{{ if eq .action "create" }}Create{{ else }}Save{{ end }}</button>
-    <a href="/admin/{{ .model.Slug }}/entries" role="button" class="secondary outline">Cancel</a>
+    </div>
+    <div class="px-5 py-4 border-t border-slate-200 bg-slate-50 flex gap-2">
+      <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+        {{ if eq .action "create" }}Create Entry{{ else }}Save Changes{{ end }}
+      </button>
+      <a href="/admin/{{ .model.Slug }}/entries" class="px-4 py-2 border border-slate-300 text-slate-600 text-sm font-medium rounded-lg hover:bg-white transition-colors">
+        Cancel
+      </a>
+    </div>
   </div>
 </form>
 {{ end }}

@@ -10,7 +10,6 @@
 ">
   <textarea
     name="content[{{ .Field.Name }}]"
-    {{ if .Field.Required }}required{{ end }}
     placeholder="Write Markdown here...">{{ .Value }}</textarea>
 </div>
 {{ end }}

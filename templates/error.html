@@ -1,5 +1,14 @@
 {{ define "content" }}
-<h2>Error {{ .status }}</h2>
-<p>{{ .error }}</p>
-<a href="javascript:history.back()">← Back</a>
+<div class="flex flex-col items-center justify-center py-20 text-center">
+  <div class="text-6xl font-black text-slate-200 mb-4">{{ .status }}</div>
+  <h2 class="text-lg font-semibold text-slate-700 mb-2">エラーが発生しました</h2>
+  <p class="text-sm text-slate-500 mb-6 max-w-sm">{{ .error }}</p>
+  <a href="javascript:history.back()"
+     class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    戻る
+  </a>
+</div>
 {{ end }}
