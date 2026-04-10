@@ -1,12 +1,12 @@
 {{ define "content" }}
 <div class="mb-6">
   <div class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
-    <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">Content Models</a>
+    <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">コンテンツモデル</a>
     <span>/</span>
-    <span>{{ if eq .action "create" }}New Model{{ else }}Edit{{ end }}</span>
+    <span>{{ if eq .action "create" }}新規作成{{ else }}編集{{ end }}</span>
   </div>
   <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-    {{ if eq .action "create" }}New Content Model{{ else }}Edit: {{ .model.Name }}{{ end }}
+    {{ if eq .action "create" }}新規コンテンツモデル{{ else }}編集: {{ .model.Name }}{{ end }}
   </h1>
 </div>
 
@@ -29,44 +29,44 @@
 
   <div class="grid grid-cols-2 gap-5 items-start">
 
-    <!-- Left: Basic info -->
+    <!-- 基本情報 -->
     <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
       <div class="px-5 py-3.5 border-b border-slate-200 text-sm font-semibold text-slate-700">基本情報</div>
       <div class="p-5 space-y-4">
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">
-            Name <span class="text-red-500">*</span>
+            名前 <span class="text-red-500">*</span>
           </label>
-          <input type="text" name="name" value="{{ .model.Name }}" required placeholder="Blog Post"
+          <input type="text" name="name" value="{{ .model.Name }}" required placeholder="ブログ記事"
             class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300">
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Slug</label>
+          <label class="block text-sm font-medium text-slate-700 mb-1">スラッグ</label>
           <input type="text" name="slug" value="{{ .model.Slug }}" required placeholder="blog-post" pattern="[a-z0-9-]+"
             class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300 font-mono">
-          <p class="mt-1 text-xs text-slate-400">小文字・数字・ハイフンのみ</p>
+          <p class="mt-1 text-xs text-slate-400">半角英数字・ハイフンのみ使用できます</p>
         </div>
         <div class="flex gap-2 pt-1">
           <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
-            {{ if eq .action "create" }}Create Model{{ else }}Save Changes{{ end }}
+            {{ if eq .action "create" }}作成する{{ else }}変更を保存{{ end }}
           </button>
           <a href="/admin/content-models" class="px-4 py-2 border border-slate-300 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
-            Cancel
+            キャンセル
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Right: Fields -->
+    <!-- フィールド定義 -->
     <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
       <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
-        <span class="text-sm font-semibold text-slate-700">Fields</span>
+        <span class="text-sm font-semibold text-slate-700">フィールド定義</span>
         <button type="button" @click="addField()"
           class="inline-flex items-center gap-1 px-2.5 py-1.5 border border-slate-300 text-slate-600 text-xs font-medium rounded-md hover:bg-slate-50 transition-colors">
           <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
-          Add Field
+          フィールドを追加
         </button>
       </div>
       <div class="p-5">
@@ -89,14 +89,14 @@
                 class="px-2.5 py-1.5 text-xs font-mono border border-slate-300 rounded-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 bg-white">
               <select x-model="field.type"
                 class="px-2 py-1.5 text-xs border border-slate-300 rounded-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 bg-white">
-                <option value="text">Text</option>
-                <option value="number">Number</option>
-                <option value="date">Date</option>
+                <option value="text">テキスト</option>
+                <option value="number">数値</option>
+                <option value="date">日時</option>
                 <option value="markdown">Markdown</option>
               </select>
               <label class="flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
                 <input type="checkbox" x-model="field.required" class="w-3.5 h-3.5 accent-blue-600">
-                <span class="text-xs text-slate-500">Required</span>
+                <span class="text-xs text-slate-500">必須</span>
               </label>
               <button type="button" @click="removeField(index)"
                 class="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors">

@@ -1,14 +1,14 @@
 {{ define "content" }}
 <div class="mb-6">
   <div class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
-    <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">Content Models</a>
+    <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">コンテンツモデル</a>
     <span>/</span>
     <a href="/admin/{{ .model.Slug }}/entries" class="hover:text-blue-600 transition-colors">{{ .model.Name }}</a>
     <span>/</span>
-    <span>{{ if eq .action "create" }}New{{ else }}Edit #{{ .entry.ID }}{{ end }}</span>
+    <span>{{ if eq .action "create" }}新規作成{{ else }}編集 #{{ .entry.ID }}{{ end }}</span>
   </div>
   <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-    {{ if eq .action "create" }}New {{ .model.Name }}{{ else }}Edit Entry #{{ .entry.ID }}{{ end }}
+    {{ if eq .action "create" }}{{ .model.Name }} — 新規エントリ{{ else }}エントリ #{{ .entry.ID }} を編集{{ end }}
   </h1>
 </div>
 
@@ -51,10 +51,10 @@
     </div>
     <div class="px-5 py-4 border-t border-slate-200 bg-slate-50 flex gap-2">
       <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
-        {{ if eq .action "create" }}Create Entry{{ else }}Save Changes{{ end }}
+        {{ if eq .action "create" }}作成する{{ else }}変更を保存{{ end }}
       </button>
       <a href="/admin/{{ .model.Slug }}/entries" class="px-4 py-2 border border-slate-300 text-slate-600 text-sm font-medium rounded-lg hover:bg-white transition-colors">
-        Cancel
+        キャンセル
       </a>
     </div>
   </div>

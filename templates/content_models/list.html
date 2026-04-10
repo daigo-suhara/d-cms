@@ -1,12 +1,12 @@
 {{ define "content" }}
 <div class="flex items-center justify-between mb-5">
-  <h1 class="text-xl font-bold text-slate-900 tracking-tight">Content Models</h1>
+  <h1 class="text-xl font-bold text-slate-900 tracking-tight">コンテンツモデル</h1>
   <a href="/admin/content-models/new"
      class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
     <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
     </svg>
-    New Model
+    新規モデル
   </a>
 </div>
 
@@ -15,10 +15,10 @@
   <table class="w-full">
     <thead>
       <tr class="border-b border-slate-200">
-        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">Name</th>
-        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">Slug</th>
-        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">Fields</th>
-        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-32">Actions</th>
+        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">名前</th>
+        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">スラッグ</th>
+        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">フィールド数</th>
+        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-36">操作</th>
       </tr>
     </thead>
     <tbody id="models-list" class="divide-y divide-slate-100">
@@ -32,22 +32,22 @@
         </td>
         <td class="px-5 py-3.5">
           <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600">
-            {{ len .Fields }} fields
+            {{ len .Fields }} 件
           </span>
         </td>
         <td class="px-5 py-3.5">
-          <div class="flex items-center gap-1.5">
+          <div class="flex flex-row items-center gap-1.5 whitespace-nowrap">
             <a href="/admin/content-models/{{ .ID }}/edit"
                class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-md hover:bg-slate-50 transition-colors">
-              Edit
+              編集
             </a>
             <button
               hx-delete="/admin/content-models/{{ .ID }}"
               hx-target="#model-{{ .ID }}"
               hx-swap="outerHTML"
-              hx-confirm="Delete '{{ .Name }}'? This will fail if entries exist."
+              hx-confirm="「{{ .Name }}」を削除しますか？エントリが存在する場合は削除できません。"
               class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors">
-              Delete
+              削除
             </button>
           </div>
         </td>
@@ -61,7 +61,7 @@
   <svg class="w-10 h-10 mx-auto mb-3 text-slate-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
   </svg>
-  <h3 class="text-sm font-semibold text-slate-600 mb-1">No content models yet</h3>
+  <h3 class="text-sm font-semibold text-slate-600 mb-1">コンテンツモデルがありません</h3>
   <p class="text-sm text-slate-400">
     <a href="/admin/content-models/new" class="text-blue-600 hover:underline">最初のモデルを作成する</a>
   </p>

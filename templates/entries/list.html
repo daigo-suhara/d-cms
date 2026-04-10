@@ -2,7 +2,7 @@
 <div class="flex items-start justify-between mb-5">
   <div>
     <div class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
-      <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">Content Models</a>
+      <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">コンテンツモデル</a>
       <span>/</span>
       <span>{{ .model.Name }}</span>
     </div>
@@ -13,7 +13,7 @@
     <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
     </svg>
-    New Entry
+    新規エントリ
   </a>
 </div>
 
@@ -27,8 +27,8 @@
           {{ range .model.Fields }}
           <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">{{ .Name }}</th>
           {{ end }}
-          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">Created</th>
-          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-32">Actions</th>
+          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">作成日時</th>
+          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-32">操作</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-100">
@@ -44,21 +44,21 @@
           </td>
           {{ end }}
           <td class="px-5 py-3.5 text-xs text-slate-400 whitespace-nowrap">
-            {{ .CreatedAt.Format "2006-01-02 15:04" }}
+            {{ .CreatedAt.Format "2006/01/02 15:04" }}
           </td>
           <td class="px-5 py-3.5">
             <div class="flex items-center gap-1.5">
               <a href="/admin/{{ $.model.Slug }}/entries/{{ .ID }}/edit"
-                 class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-md hover:bg-slate-50 transition-colors">
-                Edit
+                 class="inline-flex items-center whitespace-nowrap px-2.5 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-md hover:bg-slate-50 transition-colors">
+                編集
               </a>
               <button
                 hx-delete="/admin/{{ $.model.Slug }}/entries/{{ .ID }}"
                 hx-target="#entry-{{ .ID }}"
                 hx-swap="outerHTML"
-                hx-confirm="Delete this entry?"
-                class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors">
-                Delete
+                hx-confirm="このエントリを削除しますか？"
+                class="inline-flex items-center whitespace-nowrap px-2.5 py-1 text-xs font-medium border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors">
+                削除
               </button>
             </div>
           </td>
