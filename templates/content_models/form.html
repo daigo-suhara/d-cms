@@ -1,17 +1,17 @@
 {{ define "content" }}
 <div class="mb-6">
-  <div class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+  <div class="breadcrumb">
     <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">コンテンツモデル</a>
     <span>/</span>
     <span>{{ if eq .action "create" }}新規作成{{ else }}編集{{ end }}</span>
   </div>
-  <h1 class="text-xl font-bold text-slate-900 tracking-tight">
+  <h1 class="page-title">
     {{ if eq .action "create" }}新規コンテンツモデル{{ else }}編集: {{ .model.Name }}{{ end }}
   </h1>
 </div>
 
 {{ if .error }}
-<div class="flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-5">
+<div class="alert-error">
   <svg class="w-4 h-4 mt-0.5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
   </svg>
@@ -30,37 +30,35 @@
   <div class="grid grid-cols-2 gap-5 items-start">
 
     <!-- 基本情報 -->
-    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
-      <div class="px-5 py-3.5 border-b border-slate-200 text-sm font-semibold text-slate-700">基本情報</div>
-      <div class="p-5 space-y-4">
+    <div class="card">
+      <div class="card-header">基本情報</div>
+      <div class="card-body space-y-4">
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">
+          <label class="form-label">
             名前 <span class="text-red-500">*</span>
           </label>
           <input type="text" name="name" value="{{ .model.Name }}" required placeholder="ブログ記事"
-            class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300">
+            class="form-input">
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">スラッグ</label>
+          <label class="form-label" style="margin-bottom:4px">スラッグ</label>
           <input type="text" name="slug" value="{{ .model.Slug }}" required placeholder="blog-post" pattern="[a-z0-9-]+"
-            class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300 font-mono">
+            class="form-input font-mono">
           <p class="mt-1 text-xs text-slate-400">半角英数字・ハイフンのみ使用できます</p>
         </div>
         <div class="flex gap-2 pt-1">
-          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+          <button type="submit" class="btn-blue">
             {{ if eq .action "create" }}作成する{{ else }}変更を保存{{ end }}
           </button>
-          <a href="/admin/content-models" class="px-4 py-2 border border-slate-300 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
-            キャンセル
-          </a>
+          <a href="/admin/content-models" class="btn-secondary">キャンセル</a>
         </div>
       </div>
     </div>
 
     <!-- フィールド定義 -->
-    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
-      <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
-        <span class="text-sm font-semibold text-slate-700">フィールド定義</span>
+    <div class="card">
+      <div class="card-header flex items-center justify-between">
+        <span>フィールド定義</span>
         <button type="button" @click="addField()"
           class="inline-flex items-center gap-1 px-2.5 py-1.5 border border-slate-300 text-slate-600 text-xs font-medium rounded-md hover:bg-slate-50 transition-colors">
           <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -69,7 +67,7 @@
           フィールドを追加
         </button>
       </div>
-      <div class="p-5">
+      <div class="card-body">
         <input type="hidden" name="fields_json" :value="JSON.stringify(fields)">
 
         <template x-if="fields.length === 0">

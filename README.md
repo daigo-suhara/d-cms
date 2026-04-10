@@ -120,7 +120,7 @@ internal/
 
 router/router.go                ルーティング登録・DI・テンプレート設定
 
-templates/
+templates/                          → [UI コンポーネントクラス一覧](templates/COMPONENTS.md)
 ├── layout/base.html            共通レイアウト（折りたたみサイドバー、Alpine.js）
 ├── auth/login.html             ログインページ（スタンドアロン）
 ├── content_models/

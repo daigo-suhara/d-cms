@@ -1,8 +1,7 @@
 {{ define "content" }}
-<div class="flex items-center justify-between mb-5">
-  <h1 class="text-xl font-bold text-slate-900 tracking-tight">メディアライブラリ</h1>
-  <button onclick="document.getElementById('upload-dialog').showModal()"
-          class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+<div class="page-header">
+  <h1 class="page-title">メディアライブラリ</h1>
+  <button onclick="document.getElementById('upload-dialog').showModal()" class="btn-primary">
     <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
     </svg>
@@ -40,7 +39,7 @@
 {{ if .media }}
 <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));">
   {{ range .media }}
-  <div id="media-{{ .ID }}" class="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-blue-300 hover:shadow-md transition-all group">
+  <div id="media-{{ .ID }}" class="card hover:border-blue-300 hover:shadow-md transition-all group">
     <div class="h-28 bg-slate-50 flex items-center justify-center overflow-hidden">
       {{ if isImage .MimeType }}
       <img src="{{ .URL }}" alt="{{ .Filename }}" class="w-full h-full object-cover">
@@ -74,7 +73,7 @@
   {{ end }}
 </div>
 {{ else }}
-<div class="bg-white border border-slate-200 rounded-xl py-16 text-center">
+<div class="empty-state">
   <svg class="w-10 h-10 mx-auto mb-3 text-slate-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
   </svg>

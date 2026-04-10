@@ -1,8 +1,7 @@
 {{ define "content" }}
-<div class="flex items-center justify-between mb-5">
-  <h1 class="text-xl font-bold text-slate-900 tracking-tight">コンテンツモデル</h1>
-  <a href="/admin/content-models/new"
-     class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+<div class="page-header">
+  <h1 class="page-title">コンテンツモデル</h1>
+  <a href="/admin/content-models/new" class="btn-primary">
     <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
     </svg>
@@ -11,36 +10,33 @@
 </div>
 
 {{ if .models }}
-<div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+<div class="card">
   <table class="w-full">
     <thead>
       <tr class="border-b border-slate-200">
-        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">名前</th>
-        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">スラッグ</th>
-        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">フィールド数</th>
-        <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-36">操作</th>
+        <th class="th">名前</th>
+        <th class="th">スラッグ</th>
+        <th class="th">フィールド数</th>
+        <th class="th w-36">操作</th>
       </tr>
     </thead>
     <tbody id="models-list" class="divide-y divide-slate-100">
       {{ range .models }}
       <tr id="model-{{ .ID }}" class="hover:bg-slate-50 transition-colors">
-        <td class="px-5 py-3.5">
+        <td class="td">
           <a href="/admin/{{ .Slug }}/entries" class="font-medium text-blue-600 hover:text-blue-700 hover:underline">{{ .Name }}</a>
         </td>
-        <td class="px-5 py-3.5">
+        <td class="td">
           <code class="text-xs font-mono bg-violet-50 text-violet-700 px-2 py-0.5 rounded">{{ .Slug }}</code>
         </td>
-        <td class="px-5 py-3.5">
+        <td class="td">
           <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600">
             {{ len .Fields }} 件
           </span>
         </td>
-        <td class="px-5 py-3.5">
-          <div class="flex flex-row items-center gap-1.5 whitespace-nowrap">
-            <a href="/admin/content-models/{{ .ID }}/edit"
-               class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-md hover:bg-slate-50 transition-colors">
-              編集
-            </a>
+        <td class="td">
+          <div class="flex flex-row items-center gap-1.5">
+            <a href="/admin/content-models/{{ .ID }}/edit" class="btn-sm-edit">編集</a>
             <button
               hx-delete="/admin/content-models/{{ .ID }}"
               hx-target="#model-{{ .ID }}"
@@ -50,7 +46,7 @@
                 message: '「{{ .Name }}」を削除しますか？エントリが存在する場合は削除できません。',
                 el: $el
               })"
-              class="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors">
+              class="btn-sm-delete">
               削除
             </button>
           </div>
@@ -61,7 +57,7 @@
   </table>
 </div>
 {{ else }}
-<div class="bg-white border border-slate-200 rounded-xl py-16 text-center">
+<div class="empty-state">
   <svg class="w-10 h-10 mx-auto mb-3 text-slate-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
   </svg>

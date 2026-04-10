@@ -1,15 +1,14 @@
 {{ define "content" }}
 <div class="flex items-start justify-between mb-5">
   <div>
-    <div class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+    <div class="breadcrumb">
       <a href="/admin/content-models" class="hover:text-blue-600 transition-colors">コンテンツモデル</a>
       <span>/</span>
       <span>{{ .model.Name }}</span>
     </div>
-    <h1 class="text-xl font-bold text-slate-900 tracking-tight">{{ .model.Name }}</h1>
+    <h1 class="page-title">{{ .model.Name }}</h1>
   </div>
-  <a href="/admin/{{ .model.Slug }}/entries/new"
-     class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+  <a href="/admin/{{ .model.Slug }}/entries/new" class="btn-primary">
     <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
     </svg>
@@ -18,40 +17,37 @@
 </div>
 
 {{ if .entries }}
-<div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+<div class="card">
   <div class="overflow-x-auto">
     <table class="w-full">
       <thead>
         <tr class="border-b border-slate-200">
-          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-16">ID</th>
+          <th class="th w-16">ID</th>
           {{ range .model.Fields }}
-          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">{{ .Name }}</th>
+          <th class="th">{{ .Name }}</th>
           {{ end }}
-          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50">作成日時</th>
-          <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 w-32">操作</th>
+          <th class="th">作成日時</th>
+          <th class="th w-32">操作</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-100">
         {{ range .entries }}
         <tr id="entry-{{ .ID }}" class="hover:bg-slate-50 transition-colors">
-          <td class="px-5 py-3.5">
+          <td class="td">
             <span class="text-xs font-mono text-slate-400">#{{ .ID }}</span>
           </td>
           {{ $content := .Content }}
           {{ range $.model.Fields }}
-          <td class="px-5 py-3.5 text-slate-700 max-w-[180px]">
+          <td class="td text-slate-700 max-w-[180px]">
             <span class="block truncate text-sm">{{ index $content .Name }}</span>
           </td>
           {{ end }}
-          <td class="px-5 py-3.5 text-xs text-slate-400 whitespace-nowrap">
+          <td class="td text-xs text-slate-400 whitespace-nowrap">
             {{ .CreatedAt.Format "2006/01/02 15:04" }}
           </td>
-          <td class="px-5 py-3.5">
+          <td class="td">
             <div class="flex items-center gap-1.5">
-              <a href="/admin/{{ $.model.Slug }}/entries/{{ .ID }}/edit"
-                 class="inline-flex items-center whitespace-nowrap px-2.5 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-md hover:bg-slate-50 transition-colors">
-                編集
-              </a>
+              <a href="/admin/{{ $.model.Slug }}/entries/{{ .ID }}/edit" class="btn-sm-edit">編集</a>
               <button
                 hx-delete="/admin/{{ $.model.Slug }}/entries/{{ .ID }}"
                 hx-target="#entry-{{ .ID }}"
@@ -61,7 +57,7 @@
                   message: 'このエントリを削除しますか？この操作は取り消せません。',
                   el: $el
                 })"
-                class="inline-flex items-center whitespace-nowrap px-2.5 py-1 text-xs font-medium border border-red-200 text-red-500 rounded-md hover:bg-red-50 transition-colors">
+                class="btn-sm-delete">
                 削除
               </button>
             </div>
@@ -73,7 +69,7 @@
   </div>
 </div>
 {{ else }}
-<div class="bg-white border border-slate-200 rounded-xl py-16 text-center">
+<div class="empty-state">
   <svg class="w-10 h-10 mx-auto mb-3 text-slate-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
   </svg>
