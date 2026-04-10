@@ -36,7 +36,13 @@ func (s *MediaService) Upload(ctx context.Context, fh *multipart.FileHeader) (*d
 	if err != nil {
 		return nil, fmt.Errorf("open uploaded file: %w", err)
 	}
-	defer f.Close()
+
+	defer func() {
+		closeErr := f.Close()
+		if err == nil {
+			err = closeErr // Only override err if it wasn't already set
+		}
+	}()
 
 	ext := filepath.Ext(fh.Filename)
 	key := uuid.New().String() + ext
