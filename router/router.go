@@ -73,6 +73,10 @@ func funcMap() template.FuncMap {
 			b, _ := json.Marshal(fields)
 			return template.JS(b)
 		},
+		"jsonStringify": func(v any) template.JS {
+			b, _ := json.Marshal(v)
+			return template.JS(b)
+		},
 		"dict": func(values ...interface{}) map[string]interface{} {
 			m := make(map[string]interface{})
 			for i := 0; i+1 < len(values); i += 2 {

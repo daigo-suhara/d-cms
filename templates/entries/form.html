@@ -45,6 +45,8 @@
             {{ template "field/date" dict "Field" . "Value" $val }}
           {{ else if eq .Type "markdown" }}
             {{ template "field/markdown" dict "Field" . "Value" $val }}
+          {{ else if eq .Type "tags" }}
+            {{ template "field/tags" dict "Field" . "Value" $val }}
           {{ end }}
         </div>
       {{ end }}

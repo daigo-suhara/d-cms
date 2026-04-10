@@ -123,6 +123,7 @@ func blogModel() *domain.ContentModel {
 			{Name: "views", Type: domain.FieldTypeNumber, Required: false},
 			{Name: "published_at", Type: domain.FieldTypeDate, Required: false},
 			{Name: "body", Type: domain.FieldTypeMarkdown, Required: false},
+			{Name: "tags", Type: domain.FieldTypeTags, Required: false},
 		},
 	}
 }
@@ -204,5 +205,38 @@ func TestEntryService_Delete_NotFound(t *testing.T) {
 	err := svc.Delete(context.Background(), 999)
 	if !errors.Is(err, domain.ErrNotFound) {
 		t.Fatalf("expected ErrNotFound, got %v", err)
+	}
+}
+
+func TestEntryService_Create_ValidTags(t *testing.T) {
+	svc := newSvc()
+	_, err := svc.Create(context.Background(), "blog", domain.ContentData{
+		"title": "Tagged Post",
+		"tags":  []any{"go", "cms"},
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestEntryService_Create_InvalidTags(t *testing.T) {
+	svc := newSvc()
+	_, err := svc.Create(context.Background(), "blog", domain.ContentData{
+		"title": "Bad Tags",
+		"tags":  "not-an-array",
+	})
+	if !errors.Is(err, domain.ErrInvalidField) {
+		t.Fatalf("expected ErrInvalidField, got %v", err)
+	}
+}
+
+func TestEntryService_Create_TagsWithNonString(t *testing.T) {
+	svc := newSvc()
+	_, err := svc.Create(context.Background(), "blog", domain.ContentData{
+		"title": "Bad Tags",
+		"tags":  []any{"go", 42},
+	})
+	if !errors.Is(err, domain.ErrInvalidField) {
+		t.Fatalf("expected ErrInvalidField, got %v", err)
 	}
 }

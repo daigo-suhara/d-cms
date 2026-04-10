@@ -219,6 +219,17 @@ func (ctrl *EntryController) parseContent(c *gin.Context, modelSlug string) (dom
 
 	content := make(domain.ContentData)
 	for _, field := range model.Fields {
+		if field.Type == domain.FieldTypeTags {
+			tags := c.PostFormArray(fmt.Sprintf("content[%s][]", field.Name))
+			if len(tags) > 0 {
+				vals := make([]any, len(tags))
+				for i, t := range tags {
+					vals[i] = t
+				}
+				content[field.Name] = vals
+			}
+			continue
+		}
 		val := c.PostForm(fmt.Sprintf("content[%s]", field.Name))
 		if val != "" {
 			content[field.Name] = val
