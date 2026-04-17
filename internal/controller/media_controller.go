@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/daigo-suhara/d-cms/internal/presenter"
 	"github.com/daigo-suhara/d-cms/internal/service"
@@ -44,7 +45,7 @@ func (ctrl *MediaController) Upload(c *gin.Context) {
 		presenter.Respond(c).RenderError(c, http.StatusInternalServerError, err)
 		return
 	}
-	if isHTMLRequest(c) {
+	if isHTMLRequest(c) && !strings.Contains(c.GetHeader("Accept"), "application/json") {
 		presenter.Redirect(c, "/admin/media")
 		return
 	}
