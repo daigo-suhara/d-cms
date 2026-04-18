@@ -57,6 +57,13 @@ func Setup(db *gorm.DB, storage service.StorageClient, cfg *config.Config) *gin.
 	mediaCtrl.Register(admin)
 	apiKeyCtrl.Register(admin)
 
+	// Backup routes (storage must implement BackupStorage)
+	if bs, ok := storage.(service.BackupStorage); ok {
+		backupSvc := service.NewBackupService(cmRepo, entryRepo, mediaRepo, bs)
+		backupCtrl := controller.NewBackupController(backupSvc)
+		backupCtrl.Register(admin)
+	}
+
 	// ── API v1 (全エンドポイントAPIキー必須) ────────────────────────────────
 
 	api := r.Group("/api/v1", middleware.APIAuth(apiKeySvc))
@@ -128,6 +135,7 @@ func createRenderer() multitemplate.Renderer {
 		"entries/form.html":        "templates/entries/form.html",
 		"media/list.html":          "templates/media/list.html",
 		"api_keys/list.html":       "templates/api_keys/list.html",
+		"backup/index.html":        "templates/backup/index.html",
 		"error.html":               "templates/error.html",
 	}
 

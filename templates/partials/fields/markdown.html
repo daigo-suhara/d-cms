@@ -1,27 +1,25 @@
 {{ define "field/markdown" }}
 <div x-data x-init="
   const el = $el.querySelector('textarea');
-  new EasyMDE({
+  const mde = new EasyMDE({
     element: el,
     spellChecker: false,
     minHeight: '200px',
-    toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','image','upload-image','|','preview','fullscreen'],
-    uploadImage: true,
-    imageUploadFunction: function(file, onSuccess, onError) {
-      const formData = new FormData();
-      formData.append('file', file);
-      fetch('/admin/media/upload', {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: formData
-      })
-      .then(function(r) {
-        if (!r.ok) throw new Error('Upload failed');
-        return r.json();
-      })
-      .then(function(data) { onSuccess(data.url); })
-      .catch(function() { onError('画像のアップロードに失敗しました'); });
-    }
+    toolbar: [
+      'bold','italic','heading','|',
+      'quote','unordered-list','ordered-list','|',
+      'link',
+      {
+        name: 'media-library',
+        action: function(editor) {
+          window._activeMde = editor;
+          Alpine.store('mediaPicker').open();
+        },
+        className: 'fa fa-image',
+        title: 'メディアライブラリから画像を挿入',
+      },
+      '|','preview','fullscreen'
+    ],
   });
 ">
   <textarea

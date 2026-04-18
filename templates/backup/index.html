@@ -1,0 +1,80 @@
+{{ define "content" }}
+<div class="page-header">
+  <h1 class="page-title">バックアップ管理</h1>
+  <form method="POST" action="/admin/backups"
+        onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').textContent='作成中...'">
+    <button type="submit" class="btn-primary">
+      <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      バックアップを作成
+    </button>
+  </form>
+</div>
+
+{{ if .flash }}
+<div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-5 flex items-center gap-2 text-sm text-emerald-800">
+  <svg class="w-4 h-4 text-emerald-500 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+  </svg>
+  {{ .flash }}
+</div>
+{{ end }}
+
+<div class="card">
+  <div class="card-header flex items-center justify-between">
+    <span>バックアップ一覧（R2 / S3）</span>
+    <span class="text-xs text-slate-400 font-normal">バックアップはストレージの <code class="font-mono bg-slate-100 px-1 rounded">backups/</code> プレフィックスに保存されます</span>
+  </div>
+
+  {{ if .backups }}
+  <table class="w-full">
+    <thead>
+      <tr class="border-b border-slate-200">
+        <th class="th">ファイル名</th>
+        <th class="th">作成日時</th>
+        <th class="th w-36">操作</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      {{ range .backups }}
+      <tr class="hover:bg-slate-50 transition-colors">
+        <td class="td">
+          <code class="text-xs font-mono text-slate-600">{{ .Name }}</code>
+        </td>
+        <td class="td text-xs text-slate-500 whitespace-nowrap">
+          {{ .CreatedAt.Format "2006/01/02 15:04:05" }} UTC
+        </td>
+        <td class="td">
+          <form method="POST" action="/admin/backups/restore"
+                onsubmit="return confirm('「{{ .Name }}」からインポートしますか？\n既存のコンテンツモデルは上書きされません。エントリとメディアメタデータが追加されます。')">
+            <input type="hidden" name="key" value="{{ .Key }}">
+            <button type="submit" class="btn-sm-edit">
+              インポート
+            </button>
+          </form>
+        </td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+  {{ else }}
+  <div class="py-16 text-center">
+    <svg class="w-10 h-10 mx-auto mb-3 text-slate-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+    </svg>
+    <h3 class="text-sm font-semibold text-slate-600 mb-1">バックアップがありません</h3>
+    <p class="text-sm text-slate-400">「バックアップを作成」ボタンで最初のバックアップを作成してください</p>
+  </div>
+  {{ end }}
+</div>
+
+<div class="mt-5 card">
+  <div class="card-header">バックアップについて</div>
+  <div class="card-body text-sm text-slate-600 space-y-2">
+    <p><span class="font-medium">バックアップ対象:</span> コンテンツモデル、エントリ、メディアメタデータ（ファイル本体は対象外）</p>
+    <p><span class="font-medium">保存先:</span> ストレージ（R2 / S3）の <code class="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">backups/</code> プレフィックス</p>
+    <p><span class="font-medium">インポート動作:</span> 同じスラッグのコンテンツモデルが存在する場合はスキップされます。エントリは常に追加されます。メディアは同じURLが存在する場合はスキップされます。</p>
+  </div>
+</div>
+{{ end }}

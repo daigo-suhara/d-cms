@@ -68,3 +68,38 @@ func (r *R2Client) Delete(ctx context.Context, key string) error {
 	}
 	return nil
 }
+
+func (r *R2Client) Download(ctx context.Context, key string) (io.ReadCloser, error) {
+	if r.client == nil {
+		return nil, fmt.Errorf("R2 storage is not configured")
+	}
+	result, err := r.client.GetObject(ctx, &s3.GetObjectInput{
+		Bucket: aws.String(r.bucket),
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("R2 GetObject %q: %w", key, err)
+	}
+	return result.Body, nil
+}
+
+func (r *R2Client) ListObjects(ctx context.Context, prefix string) ([]string, error) {
+	if r.client == nil {
+		return nil, fmt.Errorf("R2 storage is not configured")
+	}
+	paginator := s3.NewListObjectsV2Paginator(r.client, &s3.ListObjectsV2Input{
+		Bucket: aws.String(r.bucket),
+		Prefix: aws.String(prefix),
+	})
+	var keys []string
+	for paginator.HasMorePages() {
+		page, err := paginator.NextPage(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("R2 ListObjectsV2 prefix=%q: %w", prefix, err)
+		}
+		for _, obj := range page.Contents {
+			keys = append(keys, aws.ToString(obj.Key))
+		}
+	}
+	return keys, nil
+}
