@@ -140,7 +140,9 @@ func (s *BackupService) RestoreBackup(ctx context.Context, key string) error {
 	if err != nil {
 		return fmt.Errorf("download backup %q: %w", key, err)
 	}
-	defer rc.Close()
+	defer func() {
+		_ = rc.Close()
+	}()
 
 	var data BackupData
 	if err := json.NewDecoder(rc).Decode(&data); err != nil {
